@@ -1,5 +1,9 @@
+"use client"
+
 import { cn } from "@/lib/cn"
 import { Tag } from "./tag"
+import { AnimatePresence, motion } from "framer-motion"
+import { useState } from "react"
 
 const faqs = [
   {
@@ -30,7 +34,8 @@ const faqs = [
 ]
 
 export const Faqs = () => {
-  const selectedIndex = 0
+  const [selectedIndex, setSelectedIndex] = useState(0)
+
   return (
     <section className="py-24">
       <div className="container">
@@ -47,7 +52,10 @@ export const Faqs = () => {
               key={faq.question}
               className="bg-neutral-900 rounded-2xl border border-white/10 p-6"
             >
-              <div className="flex justify-between items-center">
+              <div
+                onClick={() => setSelectedIndex(faqIndex)}
+                className="flex justify-between items-center"
+              >
                 <h3 className="font-medium">{faq.question}</h3>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -60,7 +68,7 @@ export const Faqs = () => {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   className={cn(
-                    "feather feather-plus text-lime-400 flex-shrink-0",
+                    "feather feather-plus text-lime-400 flex-shrink-0 transition duration-300",
                     selectedIndex === faqIndex && "rotate-45"
                   )}
                 >
@@ -79,9 +87,27 @@ export const Faqs = () => {
                 </svg>
               </div>
 
-              <div className={cn("mt-6", selectedIndex !== faqIndex && "hidden")}>
-                <p className="text-white/50">{faq.answer}</p>
-              </div>
+              <AnimatePresence>
+                {selectedIndex === faqIndex && (
+                  <motion.div
+                    initial={{
+                      height: 0,
+                      marginTop: 0,
+                    }}
+                    animate={{
+                      height: "auto",
+                      marginTop: 24,
+                    }}
+                    exit={{
+                      height: 0,
+                      marginTop: 0,
+                    }}
+                    className="overflow-hidden"
+                  >
+                    <p className="text-white/50">{faq.answer}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           ))}
         </div>
